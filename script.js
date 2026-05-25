@@ -1,6 +1,6 @@
 /* ===== PAGE NAVIGATION ===== */
 let currentPage = 'home';
-function showPage(name) {
+function showPage(name, opts) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -11,13 +11,18 @@ function showPage(name) {
   if (name === 'home') initScrollReveal();
   if (name === 'quiz' && !quizStarted) startQuiz();
   if (name === 'game' && !investInit) initInvestGame();
+  markProgress(name);
+  if (opts?.faq) setTimeout(() => openFaqById(opts.faq), 120);
+  if (opts?.game) setTimeout(() => switchGame(opts.game), 120);
   return false;
 }
 
 /* ===== NAVBAR ===== */
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-});
+function updateNavbarScroll() {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+}
+window.addEventListener('scroll', updateNavbarScroll, { passive: true });
+updateNavbarScroll();
 document.getElementById('hamburger').addEventListener('click', () => {
   const menu = document.getElementById('mobile-menu');
   menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
@@ -47,8 +52,9 @@ function showToast(msg, type = '') {
   geo.rotateX(-Math.PI / 3);
 
   const mat = new THREE.MeshBasicMaterial({
-    color: 0x00d4ff, wireframe: true, opacity: 0.18, transparent: true
+    color: 0x5888e8, wireframe: true, opacity: 0.18, transparent: true
   });
+  window.__heroMeshMat = mat;
   const mesh = new THREE.Mesh(geo, mat);
   scene.add(mesh);
 
@@ -154,6 +160,7 @@ function addTransaction() {
   renderTransactions();
   toggleForm();
   showToast(txType === 'income' ? '✅ Доход добавлен!' : '✅ Расход добавлен!', 'success');
+  markProgress('diary');
 }
 function deleteTransaction(id) {
   transactions = transactions.filter(t => t.id !== id);
@@ -198,26 +205,15 @@ function renderTransactions() {
 renderTransactions();
 
 /* ===== QUIZ ===== */
-const quizData = [
-  { q: 'Что такое вишинг?', opts: ['Мошенничество через телефонные звонки','Взлом банкоматов','Поддельный сайт банка','Кража карты из кошелька'], correct: 0, exp: 'Вишинг (voice+phishing) — телефонное мошенничество, когда звонят и пытаются выманить данные или деньги.' },
-  { q: 'Что нельзя называть по телефону «сотруднику банка»?', opts: ['Ваш город проживания','PIN-код и CVV карты','Имя и фамилию','Номер офиса банка'], correct: 1, exp: 'PIN-код, CVV, коды из SMS — секретные данные. Ни один настоящий банк никогда их не попросит.' },
-  { q: 'Вы получили SMS «Ваша карта заблокирована, перейдите по ссылке». Ваши действия?', opts: ['Перейти по ссылке и ввести данные','Позвонить по номеру из SMS','Позвонить в банк по официальному номеру с карты','Переслать SMS родственникам'], correct: 2, exp: 'Всегда звоните в банк по номеру, указанному на карте или официальном сайте — не по контактам из SMS.' },
-  { q: 'Что такое смишинг?', opts: ['Мошенничество через SMS','Взлом смартфона','Кража через банкомат','Поддельное приложение'], correct: 0, exp: 'Смишинг (SMS+phishing) — мошенничество через SMS-сообщения с вредоносными ссылками.' },
-  { q: 'Работодатель при видеособеседовании просит включить «демонстрацию экрана». Что делать?', opts: ['Включить — это стандартная практика','Отказаться — это опасно','Сначала спросить причину, потом решить','Согласиться, но закрыть банковские приложения'], correct: 1, exp: 'Мошенники используют демонстрацию экрана чтобы видеть SMS-коды и получить доступ к вашему банку. Всегда отказывайтесь.' },
-  { q: 'На сайте появилась «капча» и просит открыть командную строку и вставить текст. Что это?', opts: ['Обычная проверка безопасности','Обновление браузера','Мошенническая схема Fake CAPTCHA','Проверка Cloudflare'], correct: 2, exp: 'Ни один легитимный сервис не просит открывать командную строку. Это мошенническая схема для установки вируса.' },
-  { q: 'Мошенники оформили кредит на ваше имя. Что делать в первую очередь?', opts: ['Начать выплачивать кредит','Уведомить банк и написать заявление о непричастности','Подождать, может само решится','Взять ещё один кредит для погашения'], correct: 1, exp: 'Немедленно уведомите банк и напишите заявление о непричастности к сделке. Также обратитесь в полицию.' },
-  { q: 'С карты списали деньги без вашего ведома. Сколько времени есть для подачи заявления в банк?', opts: ['7 дней','30 дней','1 сутки','6 месяцев'], correct: 2, exp: 'Заявление о несогласии с операцией (чарджбэк) нужно подать в течение суток для максимальных шансов возврата.' },
-  { q: 'Какой вид мошенничества использует поддельные сайты-клоны настоящих банков?', opts: ['Вишинг','Смишинг','Фишинг','Джоб-фишинг'], correct: 2, exp: 'Фишинг — создание поддельных сайтов, имитирующих банки и сервисы, для кражи логинов и паролей.' },
-  { q: 'Что такое двухфакторная аутентификация (2FA)?', opts: ['Два пароля от карты','Дополнительное подтверждение входа (SMS-код + пароль)','Два банковских счёта','Двойной лимит на снятие'], correct: 1, exp: '2FA — дополнительный уровень защиты: помимо пароля нужен одноразовый код из SMS или приложения.' },
-];
-let quizStarted = false, quizCurrent = 0, quizScore = 0, quizAnswered = false;
+let quizStarted = false, quizCurrent = 0, quizScore = 0, quizAnswered = false, quizWrongTopics = [];
 
 function startQuiz() {
-  quizStarted = true; quizCurrent = 0; quizScore = 0; quizAnswered = false;
+  quizStarted = true; quizCurrent = 0; quizScore = 0; quizAnswered = false; quizWrongTopics = [];
   document.getElementById('quiz-result').classList.remove('visible');
   renderQuiz();
 }
 function renderQuiz() {
+  const quizData = getQuizData();
   if (quizCurrent >= quizData.length) { showQuizResult(); return; }
   const q = quizData[quizCurrent];
   const pct = (quizCurrent / quizData.length) * 100;
@@ -226,41 +222,54 @@ function renderQuiz() {
   const letters = ['A', 'B', 'C', 'D'];
   document.getElementById('quiz-area').innerHTML = `
     <div class="quiz-card">
-      <div class="quiz-q-num">Вопрос ${quizCurrent + 1} из ${quizData.length}</div>
+      <div class="quiz-q-num">${contentT('quiz.qNum', { n: quizCurrent + 1, total: quizData.length })}</div>
       <div class="quiz-question">${q.q}</div>
       <div class="quiz-options">
         ${q.opts.map((o, i) => `<button class="quiz-option" data-letter="${letters[i]}" data-idx="${i}" onclick="answerQuiz(this, ${i}, ${q.correct})">${o}</button>`).join('')}
       </div>
-      <div class="quiz-explanation" id="quiz-exp">${q.exp}</div>
+      <div class="quiz-explanation" id="quiz-exp">${q.exp}${q.faq ? `<button type="button" class="quiz-faq-link" onclick="showPage('faq', { faq: '${q.faq}' })">→ ${q.faqLabel}</button>` : ''}</div>
     </div>
-    <button class="quiz-next" id="quiz-next" onclick="nextQuestion()">Следующий вопрос →</button>
+    <button class="quiz-next" id="quiz-next" onclick="nextQuestion()">${contentT('quiz.next')}</button>
   `;
   quizAnswered = false;
 }
 function answerQuiz(btn, idx, correct) {
   if (quizAnswered) return;
   quizAnswered = true;
+  const quizData = getQuizData();
   document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
-  if (idx === correct) { btn.classList.add('correct'); quizScore++; showToast('✅ Правильно!', 'success'); }
+  if (idx === correct) { btn.classList.add('correct'); quizScore++; showToast(contentT('quiz.correct'), 'success'); }
   else {
     btn.classList.add('wrong');
     document.querySelectorAll('.quiz-option')[correct].classList.add('correct');
-    showToast('❌ Неверно', 'error');
+    showToast(contentT('quiz.wrong'), 'error');
+    const q = quizData[quizCurrent];
+    if (q.faq && !quizWrongTopics.includes(q.faq)) quizWrongTopics.push(q.faq);
   }
   document.getElementById('quiz-exp').classList.add('visible');
   document.getElementById('quiz-next').classList.add('visible');
 }
 function nextQuestion() { quizCurrent++; renderQuiz(); }
 function showQuizResult() {
+  const quizData = getQuizData();
   document.getElementById('quiz-area').innerHTML = '';
   document.getElementById('quiz-progress-bar').style.width = '100%';
-  document.getElementById('quiz-progress-text').textContent = '10 / 10';
+  document.getElementById('quiz-progress-text').textContent = quizScore + ' / ' + quizData.length;
   const r = document.getElementById('quiz-result');
   const pct = quizScore / quizData.length;
   document.getElementById('result-score').textContent = quizScore + ' / ' + quizData.length;
-  if (pct >= 0.9) { document.getElementById('result-medal').textContent = '🥇'; document.getElementById('result-msg').textContent = 'Отлично! Вы отлично разбираетесь в финансовой безопасности. Ваши средства под надёжной защитой!'; }
-  else if (pct >= 0.6) { document.getElementById('result-medal').textContent = '🥈'; document.getElementById('result-msg').textContent = 'Хороший результат! Несколько пробелов в знаниях ещё есть. Прочитайте раздел «Частые вопросы».'; }
-  else { document.getElementById('result-medal').textContent = '🥉'; document.getElementById('result-msg').textContent = 'Есть над чем поработать. Изучите наш справочник — это поможет защитить свои деньги!'; }
+  if (pct >= 0.9) { document.getElementById('result-medal').textContent = '🥇'; document.getElementById('result-msg').textContent = contentT('quiz.resultGold'); }
+  else if (pct >= 0.6) { document.getElementById('result-medal').textContent = '🥈'; document.getElementById('result-msg').textContent = contentT('quiz.resultSilver'); }
+  else { document.getElementById('result-medal').textContent = '🥉'; document.getElementById('result-msg').textContent = contentT('quiz.resultBronze'); }
+  if (quizWrongTopics.length) {
+    const links = quizWrongTopics.slice(0, 3).map(id => {
+      const el = document.getElementById(id);
+      const label = el ? el.querySelector('.faq-q-text')?.textContent.replace(/^[^\s]+\s/, '') : id;
+      return `<button type="button" class="quiz-faq-link" onclick="showPage('faq', { faq: '${id}' })">→ ${label}</button>`;
+    }).join('');
+    document.getElementById('result-msg').innerHTML += `<div style="margin-top:var(--space-4);display:flex;flex-direction:column;gap:var(--space-2);align-items:flex-start">${links}</div>`;
+  }
+  markProgress('quizDone');
   r.classList.add('visible');
 }
 
@@ -270,6 +279,7 @@ let fraudInterval, fraudTimerInterval;
 let fraudTargets = [];
 
 function startFraudGame() {
+  markProgress('game');
   document.getElementById('fraud-overlay').style.display = 'none';
   fraudScore = 0; fraudLives = 3; fraudTimer = 30; fraudLevel = 1; fraudTargets = [];
   updateFraudHUD();
@@ -527,7 +537,7 @@ function drawMarketChart() {
 
     // label
     const lastX = W - 20, lastY = H - 20 - ((a.history[a.history.length - 1] - minP) / range) * (H - 40);
-    ctx.fillStyle = colors[ai]; ctx.font = '10px Inter'; ctx.fillText(a.emoji, lastX - 24, lastY + 4);
+    ctx.fillStyle = colors[ai]; ctx.font = `10px ${currentLang === 'tg' ? '"Times New Roman TJ", "Times New Roman", Times, serif' : 'Inter'}`; ctx.fillText(a.emoji, lastX - 24, lastY + 4);
   });
 }
 
@@ -551,5 +561,458 @@ function switchGame(name) {
   if (name === 'invest' && !investInit) initInvestGame();
 }
 
+/* ===== SCAM OR SAFE GAME ===== */
+let scamActive = false, scamIdx = 0, scamScoreVal = 0, scamStreakVal = 0, scamTimeLeft = 12, scamTimerId;
+
+function startScamGame() {
+  scamActive = true; scamIdx = 0; scamScoreVal = 0; scamStreakVal = 0;
+  document.getElementById('scam-feedback').className = 'scam-feedback';
+  renderScamRound();
+}
+
+function renderScamRound() {
+  const scamData = getScamData();
+  if (scamIdx >= scamData.length) { endScamGame(); return; }
+  const s = scamData[scamIdx];
+  document.getElementById('scam-icon').textContent = s.icon;
+  document.getElementById('scam-text').textContent = s.text;
+  document.getElementById('scam-score').textContent = scamScoreVal;
+  document.getElementById('scam-round').textContent = (scamIdx + 1) + ' / ' + scamData.length;
+  document.getElementById('scam-streak').textContent = scamStreakVal;
+  document.getElementById('scam-feedback').className = 'scam-feedback';
+  document.getElementById('scam-actions').innerHTML = `
+    <button class="scam-btn scam-btn-fraud" onclick="answerScam(true)">${contentT('game.scam.scamBtn')}</button>
+    <button class="scam-btn scam-btn-safe" onclick="answerScam(false)">${contentT('game.scam.safeBtn')}</button>
+  `;
+  scamTimeLeft = 12;
+  document.getElementById('scam-timer').textContent = scamTimeLeft;
+  clearInterval(scamTimerId);
+  scamTimerId = setInterval(() => {
+    if (!scamActive) return;
+    scamTimeLeft--;
+    document.getElementById('scam-timer').textContent = scamTimeLeft;
+    if (scamTimeLeft <= 0) answerScam(null);
+  }, 1000);
+}
+
+function answerScam(pickedScam) {
+  if (!scamActive) return;
+  clearInterval(scamTimerId);
+  const scamData = getScamData();
+  const s = scamData[scamIdx];
+  const correct = pickedScam === s.isScam;
+  const fb = document.getElementById('scam-feedback');
+  fb.className = 'scam-feedback visible ' + (correct ? 'ok' : 'bad');
+  if (pickedScam === null) {
+    fb.textContent = contentT('scam.timeUp') + ' ' + s.exp;
+    scamStreakVal = 0;
+  } else if (correct) {
+    scamStreakVal++;
+    const bonus = scamStreakVal >= 3 ? 3 : scamStreakVal >= 2 ? 2 : 1;
+    scamScoreVal += bonus;
+    fb.textContent = contentT('scam.correct') + ' ' + s.exp;
+    showToast(contentT('scam.points', { n: bonus }), 'success');
+  } else {
+    scamStreakVal = 0;
+    fb.textContent = contentT('scam.wrong') + ' ' + s.exp;
+    showToast(contentT('scam.wrongAnswer'), 'error');
+  }
+  document.getElementById('scam-score').textContent = scamScoreVal;
+  document.getElementById('scam-streak').textContent = scamStreakVal;
+  document.getElementById('scam-actions').innerHTML = `<button class="game-start-btn" onclick="scamNext()">${contentT('game.scam.next')}</button>`;
+}
+
+function scamNext() {
+  scamIdx++;
+  renderScamRound();
+}
+
+function endScamGame() {
+  scamActive = false;
+  clearInterval(scamTimerId);
+  const scamData = getScamData();
+  const maxScore = scamData.length * 3;
+  document.getElementById('scam-icon').textContent = scamScoreVal >= 12 ? '🏆' : scamScoreVal >= 8 ? '🥇' : '📚';
+  const tail = scamScoreVal >= 12 ? contentT('scam.endGreat') : scamScoreVal >= 8 ? contentT('scam.endGood') : contentT('scam.endTry');
+  document.getElementById('scam-text').textContent = contentT('scam.endScore', { score: scamScoreVal, max: maxScore }) + ' ' + tail;
+  document.getElementById('scam-feedback').className = 'scam-feedback';
+  document.getElementById('scam-actions').innerHTML = `<button class="game-start-btn" onclick="startScamGame()">${contentT('game.scam.restart')}</button>`;
+}
+
+/* ===== PHISH HUNT GAME ===== */
+function getPhishRounds() { return getPhishData(currentLang); }
+let phishActive = false, phishIdx = 0, phishScoreVal = 0, phishMissVal = 0;
+
+function startPhishGame() {
+  phishActive = true; phishIdx = 0; phishScoreVal = 0; phishMissVal = 0;
+  document.getElementById('phish-start-btn').style.display = 'none';
+  document.getElementById('phish-hint').textContent = '';
+  updatePhishHUD();
+  renderPhishRound();
+}
+
+function updatePhishHUD() {
+  const rounds = getPhishRounds();
+  document.getElementById('phish-score').textContent = phishScoreVal;
+  document.getElementById('phish-round').textContent = Math.min(phishIdx + 1, rounds.length) + ' / ' + rounds.length;
+  document.getElementById('phish-miss').textContent = phishMissVal + ' / 3';
+}
+
+function renderPhishRound() {
+  const phishData = getPhishRounds();
+  if (phishIdx >= phishData.length) { endPhishGame(true); return; }
+  const round = phishData[phishIdx];
+  document.getElementById('phish-prompt').textContent = t('phish.round', { n: phishIdx + 1 });
+  document.getElementById('phish-hint').textContent = '';
+  const grid = document.getElementById('phish-url-grid');
+  grid.innerHTML = round.urls.map((url, i) =>
+    `<button class="phish-url-btn" onclick="pickPhish(${i})">${url}</button>`
+  ).join('');
+  updatePhishHUD();
+}
+
+function pickPhish(idx) {
+  if (!phishActive) return;
+  const phishData = getPhishRounds();
+  const round = phishData[phishIdx];
+  const buttons = document.querySelectorAll('.phish-url-btn');
+  buttons.forEach(b => b.disabled = true);
+  if (idx === round.fake) {
+    buttons[idx].classList.add('correct');
+    phishScoreVal += 2;
+    document.getElementById('phish-hint').textContent = '✅ ' + round.hint;
+    showToast('Фишинг найден! +2', 'success');
+    phishIdx++;
+    setTimeout(() => renderPhishRound(), 1800);
+  } else {
+    buttons[idx].classList.add('wrong');
+    buttons[round.fake].classList.add('correct');
+    phishMissVal++;
+    document.getElementById('phish-hint').textContent = '❌ ' + round.hint;
+    showToast('Это не фишинг', 'error');
+    if (phishMissVal >= 3) setTimeout(() => endPhishGame(false), 1800);
+    else { phishIdx++; setTimeout(() => renderPhishRound(), 1800); }
+  }
+  updatePhishHUD();
+}
+
+function endPhishGame(won) {
+  phishActive = false;
+  document.getElementById('phish-prompt').textContent = won
+    ? `🎉 Все раунды пройдены! Счёт: ${phishScoreVal}. Вы умеете замечать поддельные ссылки.`
+    : `Игра окончена. Счёт: ${phishScoreVal}. Тренируйтесь проверять каждый символ в URL!`;
+  document.getElementById('phish-url-grid').innerHTML = '';
+  document.getElementById('phish-hint').textContent = '';
+  document.getElementById('phish-start-btn').style.display = 'block';
+  document.getElementById('phish-start-btn').textContent = t('phish.restart');
+}
+
+/* ===== PYRAMID GAME ===== */
+let pyrActive = false, pyrBalance = 1000, pyrRoundNum = 0, pyrRisk = 0, pyrYieldPct = 0;
+
+function startPyramidGame() {
+  pyrActive = true; pyrBalance = 1000; pyrRoundNum = 0; pyrRisk = 5; pyrYieldPct = 0;
+  document.getElementById('pyramid-log').innerHTML = '';
+  document.getElementById('pyramid-visual').classList.remove('shake');
+  updatePyramidHUD();
+  logPyramid('Вы вложили 1 000 сомони в «супер-проект» с обещанием 15% в месяц…');
+  showPyramidActions();
+}
+
+function updatePyramidHUD() {
+  document.getElementById('pyr-balance').textContent = pyrBalance.toLocaleString('ru') + ' с.';
+  document.getElementById('pyr-round').textContent = pyrRoundNum;
+  document.getElementById('pyr-yield').textContent = pyrYieldPct ? '+' + pyrYieldPct + '%' : '—';
+  document.getElementById('pyr-risk').textContent = pyrRisk + '%';
+  document.getElementById('pyr-pct').textContent = pyrYieldPct;
+  const riskEl = document.getElementById('pyr-risk');
+  riskEl.style.color = pyrRisk >= 60 ? '#ff2850' : pyrRisk >= 35 ? '#ff9500' : 'var(--cyan)';
+}
+
+function logPyramid(msg) {
+  const log = document.getElementById('pyramid-log');
+  log.innerHTML = `<div>• ${msg}</div>` + log.innerHTML;
+}
+
+function showPyramidActions() {
+  document.getElementById('pyramid-desc').textContent = pyrRoundNum === 0
+    ? 'Проект обещает быстрый доход. Можно реинвестировать или вывести деньги, пока пирамида не рухнула.'
+    : `Раунд ${pyrRoundNum}: баланс вырос, но риск обвала — ${pyrRisk}%. Вывести сейчас или рискнуть дальше?`;
+  document.getElementById('pyramid-actions').innerHTML = `
+    <button class="pyr-btn pyr-btn-invest" onclick="pyramidInvest()">📈 Реинвестировать</button>
+    <button class="pyr-btn pyr-btn-cashout" onclick="pyramidCashout()">💵 Вывести деньги</button>
+  `;
+}
+
+function pyramidInvest() {
+  if (!pyrActive) return;
+  pyrRoundNum++;
+  pyrYieldPct = 8 + Math.floor(Math.random() * 12) + pyrRoundNum * 2;
+  pyrBalance = Math.round(pyrBalance * (1 + pyrYieldPct / 100));
+  pyrRisk = Math.min(95, pyrRisk + 12 + pyrRoundNum * 3);
+  logPyramid(`Раунд ${pyrRoundNum}: +${pyrYieldPct}% → баланс ${pyrBalance.toLocaleString('ru')} с. Риск обвала: ${pyrRisk}%.`);
+  updatePyramidHUD();
+
+  if (Math.random() * 100 < pyrRisk) {
+    pyramidCollapse();
+    return;
+  }
+  document.getElementById('pyramid-visual').classList.add('shake');
+  setTimeout(() => document.getElementById('pyramid-visual').classList.remove('shake'), 500);
+  showPyramidActions();
+}
+
+function pyramidCashout() {
+  if (!pyrActive) return;
+  pyrActive = false;
+  const profit = pyrBalance - 1000;
+  logPyramid(`Вы вывели ${pyrBalance.toLocaleString('ru')} сомони вовремя! ${profit >= 0 ? 'Прибыль: +' + profit : 'Убыток: ' + profit} с.`);
+  document.getElementById('pyramid-desc').textContent = profit >= 500
+    ? `🏆 Отлично! Вы вовремя поняли, что это пирамида, и забрали ${pyrBalance.toLocaleString('ru')} сомони.`
+    : `Вы вывели ${pyrBalance.toLocaleString('ru')} сомони. В реальности такие проекты часто блокируют вывод.`;
+  document.getElementById('pyramid-actions').innerHTML = `<button class="game-start-btn" onclick="startPyramidGame()">▶ Играть снова</button>`;
+  showToast('Деньги выведены!', 'success');
+}
+
+function pyramidCollapse() {
+  pyrActive = false;
+  document.getElementById('pyramid-visual').classList.add('shake');
+  logPyramid('💥 Пирамида рухнула! Проект закрылся, вывод заблокирован. Баланс обнулён.');
+  document.getElementById('pyr-balance').textContent = '0 с.';
+  document.getElementById('pyramid-desc').textContent = 'Пирамида обрушилась — так заканчиваются схемы Понци. Первым платят, последним не платят никогда. Не гонитесь за «гарантированным» доходом!';
+  document.getElementById('pyramid-actions').innerHTML = `<button class="game-start-btn" onclick="startPyramidGame()">▶ Попробовать снова</button>`;
+  showToast('Пирамида рухнула!', 'error');
+  markProgress('game');
+}
+
+/* ===== PRODUCT UX: PROGRESS, SEARCH, EMERGENCY, NEWS ===== */
+const PROGRESS_KEY = 'sm_progress';
+const PROGRESS_SECTIONS = ['kodeks', 'faq', 'diary', 'quizDone', 'game'];
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {}; } catch { return {}; }
+}
+function saveProgress(data) { localStorage.setItem(PROGRESS_KEY, JSON.stringify(data)); }
+
+function markProgress(section) {
+  const p = loadProgress();
+  if (section === 'quiz') p.quizStarted = true;
+  else if (section === 'quizDone') { p.quizDone = true; p.quizStarted = true; }
+  else if (section === 'diary') p.diary = true;
+  else if (section === 'game') p.game = true;
+  else if (['kodeks', 'faq', 'news', 'home'].includes(section)) p[section] = true;
+  saveProgress(p);
+  renderProgressStrip();
+}
+
+function renderProgressStrip() {
+  const p = loadProgress();
+  const done = PROGRESS_SECTIONS.filter(k => p[k]).length;
+  const el = document.getElementById('progress-fill');
+  const label = document.getElementById('progress-label');
+  if (!el || !label) return;
+  const pct = Math.round(done / PROGRESS_SECTIONS.length * 100);
+  el.style.width = pct + '%';
+  label.textContent = t('home.progress', { n: done, total: PROGRESS_SECTIONS.length });
+}
+
+function openFaqById(id) {
+  const item = document.getElementById(id);
+  if (!item) return;
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  item.classList.add('open');
+  item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+const emergencyKeys = ['sms', 'transfer', 'app', 'card'];
+
+function openEmergency() {
+  document.getElementById('emergency-modal-title').textContent = t('modal.emergency.title');
+  document.getElementById('emergency-modal-intro').textContent = t('modal.emergency.intro');
+  document.getElementById('emergency-steps').innerHTML = '';
+  document.getElementById('emergency-actions').innerHTML = emergencyKeys.map(k => {
+    const s = getEmergencyScenario(k);
+    return `<button class="emergency-btn emergency-btn-modal" type="button" onclick="openEmergencyScenario('${k}')"><span class="emergency-btn-icon">⚡</span><span class="emergency-btn-text">${s.short}</span></button>`;
+  }).join('');
+  document.getElementById('emergency-modal').classList.add('open');
+}
+function closeEmergency() { document.getElementById('emergency-modal').classList.remove('open'); }
+
+function openEmergencyScenario(key) {
+  const s = getEmergencyScenario(key);
+  if (!s) return;
+  document.getElementById('emergency-modal-title').textContent = s.title;
+  document.getElementById('emergency-modal-intro').textContent = s.intro;
+  document.getElementById('emergency-steps').innerHTML = s.steps.map((step, i) =>
+    `<li><span class="step-n">${i + 1}</span><span>${step}</span></li>`
+  ).join('');
+  document.getElementById('emergency-actions').innerHTML = `
+    <button class="btn-primary btn-sm modal-action-btn" type="button" onclick="closeEmergency();showPage('faq', { faq: '${s.faq}' })">${s.faqLabel}</button>
+    <button class="btn-secondary btn-sm modal-action-btn" type="button" onclick="closeEmergency();showPage('kodeks')">${t('em.kodeks')}</button>
+  `;
+  document.getElementById('emergency-modal').classList.add('open');
+}
+
+let riskIdx = 0, riskPoints = 0;
+
+function openRiskCheck() {
+  riskIdx = 0; riskPoints = 0;
+  document.getElementById('risk-modal').classList.add('open');
+  renderRiskQuestion();
+}
+function closeRiskCheck() { document.getElementById('risk-modal').classList.remove('open'); }
+
+function renderRiskQuestion() {
+  const body = document.getElementById('risk-check-body');
+  const riskQuestions = getRiskQuestions();
+  if (riskIdx >= riskQuestions.length) {
+    const level = riskPoints >= 3 ? 'high' : riskPoints >= 1 ? 'mid' : 'low';
+    const titles = { low: contentT('risk.lowTitle'), mid: contentT('risk.midTitle'), high: contentT('risk.highTitle') };
+    const msgs = { low: contentT('risk.lowMsg'), mid: contentT('risk.midMsg'), high: contentT('risk.highMsg') };
+    body.innerHTML = `
+      <div class="risk-result ${level}"><strong>${titles[level]}</strong><br>${msgs[level]}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-5)">
+        <button class="btn-primary btn-sm" type="button" onclick="closeRiskCheck();showPage('quiz')">${contentT('risk.btnQuiz')}</button>
+        <button class="btn-secondary btn-sm" type="button" onclick="closeRiskCheck();openEmergency()">${contentT('risk.btnEmergency')}</button>
+        <button class="btn-secondary btn-sm" type="button" onclick="closeRiskCheck();showPage('faq')">${contentT('risk.btnFaq')}</button>
+      </div>`;
+    return;
+  }
+  const rq = riskQuestions[riskIdx];
+  body.innerHTML = `
+    <p class="risk-q">${riskIdx + 1}. ${rq.q}</p>
+    <div class="risk-options">${rq.opts.map((o, i) =>
+      `<button type="button" class="risk-opt" onclick="answerRisk(${i})">${o}</button>`
+    ).join('')}</div>`;
+}
+
+function answerRisk(idx) {
+  const riskQuestions = getRiskQuestions();
+  if (riskQuestions[riskIdx].risky.includes(idx)) riskPoints++;
+  riskIdx++;
+  renderRiskQuestion();
+}
+
+let searchIndex = [];
+function buildSearchIndex() {
+  searchIndex = [];
+  document.querySelectorAll('.faq-item').forEach(el => {
+    searchIndex.push({
+      type: 'FAQ',
+      title: el.querySelector('.faq-q-text')?.textContent || '',
+      text: el.dataset.search || el.textContent,
+      action: () => showPage('faq', { faq: el.id })
+    });
+  });
+  document.querySelectorAll('.news-card').forEach(el => {
+    searchIndex.push({
+      type: 'Новость',
+      title: el.querySelector('.news-title')?.textContent || '',
+      text: el.querySelector('.news-desc')?.textContent || '',
+      action: () => showPage('news')
+    });
+  });
+  searchIndex.push(
+    { type: 'Кодекс', title: 'Статья 247. Мошенничество', text: 'уголовная ответственность обман доверие', action: () => showPage('kodeks') },
+    { type: 'Квиз', title: 'Проверь себя', text: 'тест финансовая безопасность', action: () => showPage('quiz') },
+    { type: 'Игра', title: 'Мини-игры', text: 'мошенник фишинг пирамида', action: () => showPage('game') }
+  );
+}
+
+function openSearch() {
+  buildSearchIndex();
+  document.getElementById('search-modal').classList.add('open');
+  const input = document.getElementById('global-search-input');
+  input.value = '';
+  document.getElementById('search-results').innerHTML = '';
+  setTimeout(() => input.focus(), 100);
+  input.oninput = () => runSearch(input.value);
+}
+function closeSearch() { document.getElementById('search-modal').classList.remove('open'); }
+
+function runSearch(q) {
+  const results = document.getElementById('search-results');
+  if (!q.trim()) { results.innerHTML = ''; return; }
+  const terms = q.toLowerCase().split(/\s+/);
+  const hits = searchIndex.filter(item => {
+    const hay = (item.title + ' ' + item.text).toLowerCase();
+    return terms.every(t => hay.includes(t));
+  }).slice(0, 12);
+  results.innerHTML = hits.length
+    ? hits.map((h, i) => `<button type="button" class="search-result-item" data-idx="${i}"><div class="search-result-type">${h.type}</div><div class="search-result-title">${h.title}</div></button>`).join('')
+    : '<p style="color:var(--text-muted);font-size:var(--text-sm);padding:var(--space-4)">Ничего не найдено</p>';
+  results.querySelectorAll('.search-result-item').forEach((btn, i) => {
+    btn.onclick = () => { closeSearch(); hits[i].action(); };
+  });
+}
+
+function categorizeNewsCard(card) {
+  const text = card.textContent.toLowerCase();
+  const cats = [];
+  if (/telegram|аккаунт|соц|tinder|мессендж/.test(text)) cats.push('social');
+  if (/sms|смс|домофон|код|push/.test(text)) cats.push('sms');
+  if (/звон|телефон|вишинг|доброт|голос/.test(text)) cats.push('calls');
+  if (/банк|кредит|карт|депозит|сбер|амонат|сомони/.test(text)) cats.push('banks');
+  if (/работ|ваканс|собесед|джоб/.test(text)) cats.push('jobs');
+  if (!cats.length) cats.push('general');
+  card.dataset.category = cats.join(' ');
+  if (/осторожно|🚨|атака|мошенн|ловуш/.test(text)) {
+    card.dataset.important = 'true';
+    card.classList.add('important-news');
+  }
+  const dateEl = card.querySelector('.news-date');
+  if (dateEl) {
+    const m = dateEl.textContent.match(/(\d{1,2})\s*(мая|февр|янв)/i);
+    if (m) card.dataset.sort = String(20260000 + (['янв','февр','мая'].indexOf(m[2].slice(0,3)) + 1) * 100 + parseInt(m[1]));
+    else card.dataset.sort = '0';
+  }
+}
+
+function initNewsFilters() {
+  const grid = document.getElementById('news-grid');
+  if (!grid) return;
+  grid.querySelectorAll('.news-card').forEach(categorizeNewsCard);
+  document.querySelectorAll('.news-filter').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.news-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyNewsFilter(btn.dataset.filter);
+    };
+  });
+  document.getElementById('news-sort')?.addEventListener('change', () => applyNewsFilter(document.querySelector('.news-filter.active')?.dataset.filter || 'all'));
+}
+
+function applyNewsFilter(filter) {
+  const grid = document.getElementById('news-grid');
+  const sort = document.getElementById('news-sort')?.value || 'new';
+  const cards = [...grid.querySelectorAll('.news-card')];
+  cards.forEach(card => {
+    const cats = card.dataset.category || '';
+    const show = filter === 'all' || cats.includes(filter);
+    card.dataset.hidden = show ? 'false' : 'true';
+  });
+  if (sort === 'important') {
+    cards.sort((a, b) => (b.dataset.important === 'true') - (a.dataset.important === 'true'));
+  } else {
+    cards.sort((a, b) => (parseInt(b.dataset.sort) || 0) - (parseInt(a.dataset.sort) || 0));
+  }
+  cards.forEach(c => grid.appendChild(c));
+}
+
+function syncThemeAccent() {
+  const light = document.documentElement.dataset.theme === 'light';
+  if (window.__heroMeshMat) window.__heroMeshMat.color.setHex(light ? 0xc026d3 : 0x5888e8);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeSearch(); closeEmergency(); closeRiskCheck(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+});
+
 /* ===== INIT ===== */
 document.getElementById('nav-home').classList.add('active');
+initTheme();
+syncThemeAccent();
+setLanguage(localStorage.getItem('sm_lang') || 'ru');
+renderProgressStrip();
+initNewsFilters();

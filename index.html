@@ -14,11 +14,17 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- NAVBAR — Apple-inspired liquid glass -->
 <nav class="navbar" id="navbar">
+  <!-- Glass layers (decorative) -->
+  <div class="navbar-glass" aria-hidden="true">
+    <span class="navbar-glass-shine"></span>
+  </div>
+
+  <div class="navbar-inner">
   <a href="#" class="nav-logo" onclick="showPage('home')">
     <svg aria-label="Sipari Moli logo" viewBox="0 0 32 32" fill="none">
-      <path d="M16 4 L28 10 L28 22 L16 28 L4 22 L4 10 Z" stroke="#00d4ff" stroke-width="1.5" fill="rgba(0,212,255,0.08)"/>
+      <path d="M16 4 L28 10 L28 22 L16 28 L4 22 L4 10 Z" stroke="#5890e6" stroke-width="1.5" fill="rgba(88,144,230,0.1)"/>
       <path d="M16 10 L22 13 L22 19 L16 22 L10 19 L10 13 Z" fill="#00d4ff" opacity="0.6"/>
       <circle cx="16" cy="16" r="2" fill="#00d4ff"/>
     </svg>
@@ -26,28 +32,48 @@
   </a>
 
   <ul class="nav-links" id="nav-links">
-    <li><a href="#" onclick="showPage('home')" id="nav-home">Главная</a></li>
-    <li><a href="#" onclick="showPage('kodeks')" id="nav-kodeks">Кодекс</a></li>
-    <li><a href="#" onclick="showPage('diary')" id="nav-diary">Дневник денег</a></li>
-    <li><a href="#" onclick="showPage('faq')" id="nav-faq">Частые вопросы</a></li>
-    <li><a href="#" onclick="showPage('quiz')" id="nav-quiz">Проверь себя</a></li>
-    <li><a href="#" onclick="showPage('game')" id="nav-game">🎮 Игра</a></li>
-    <li><a href="#" onclick="showPage('news')" class="nav-cta" id="nav-news">Новости</a></li>
+    <li><a href="#" onclick="showPage('home')" id="nav-home" data-i18n="nav.home">Главная</a></li>
+    <li><a href="#" onclick="showPage('kodeks')" id="nav-kodeks" data-i18n="nav.kodeks">Кодекс</a></li>
+    <li><a href="#" onclick="showPage('diary')" id="nav-diary" data-i18n="nav.diary">Дневник денег</a></li>
+    <li><a href="#" onclick="showPage('faq')" id="nav-faq" data-i18n="nav.faq">Частые вопросы</a></li>
+    <li><a href="#" onclick="showPage('quiz')" id="nav-quiz" data-i18n="nav.quiz">Проверь себя</a></li>
+    <li><a href="#" onclick="showPage('game')" id="nav-game" data-i18n="nav.game">🎮 Игра</a></li>
+    <li><a href="#" onclick="showPage('news')" id="nav-news" data-i18n="nav.news">Новости</a></li>
   </ul>
+
+  <div class="nav-tools">
+    <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)" aria-label="Language">
+      <option value="ru">RU</option>
+      <option value="en">EN</option>
+      <option value="tg">TJ</option>
+      <option value="uz">UZ</option>
+    </select>
+    <button class="nav-icon-btn" type="button" id="theme-toggle" onclick="toggleTheme()" title="Тема">🌙</button>
+    <button class="nav-icon-btn" type="button" onclick="openSearch()" aria-label="Поиск" data-i18n-aria="nav.search">🔍</button>
+    <button class="nav-emergency-btn" type="button" onclick="openEmergency()" data-i18n="nav.help">🆘 Помощь</button>
+  </div>
 
   <button class="hamburger" id="hamburger" aria-label="Меню">
     <span></span><span></span><span></span>
   </button>
+  </div><!-- /.navbar-inner -->
 </nav>
 
 <div class="mobile-menu" id="mobile-menu">
-  <a href="#" onclick="showPage('home');closeMobile()">Главная</a>
-  <a href="#" onclick="showPage('kodeks');closeMobile()">Кодекс</a>
-  <a href="#" onclick="showPage('diary');closeMobile()">Дневник денег</a>
-  <a href="#" onclick="showPage('faq');closeMobile()">Частые вопросы</a>
-  <a href="#" onclick="showPage('quiz');closeMobile()">Проверь себя</a>
-  <a href="#" onclick="showPage('game');closeMobile()">🎮 Мини-игра</a>
-  <a href="#" onclick="showPage('news');closeMobile()">Новости</a>
+  <div class="navbar-glass" aria-hidden="true">
+    <span class="navbar-glass-shine"></span>
+  </div>
+  <div class="mobile-menu-inner">
+  <a href="#" onclick="showPage('home');closeMobile()" data-i18n="nav.home">Главная</a>
+  <a href="#" onclick="showPage('kodeks');closeMobile()" data-i18n="nav.kodeks">Кодекс</a>
+  <a href="#" onclick="showPage('diary');closeMobile()" data-i18n="nav.diary">Дневник денег</a>
+  <a href="#" onclick="showPage('faq');closeMobile()" data-i18n="nav.faq">Частые вопросы</a>
+  <a href="#" onclick="showPage('quiz');closeMobile()" data-i18n="nav.quiz">Проверь себя</a>
+  <a href="#" onclick="showPage('game');closeMobile()" data-i18n="nav.game">🎮 Мини-игра</a>
+  <a href="#" onclick="openEmergency();closeMobile()" data-i18n="nav.emergencyMobile">🆘 Экстренная помощь</a>
+  <a href="#" onclick="openSearch();closeMobile()" data-i18n="nav.search">🔍 Поиск</a>
+  <a href="#" onclick="showPage('news');closeMobile()" data-i18n="nav.news">Новости</a>
+  </div><!-- /.mobile-menu-inner -->
 </div>
 
 <!-- TOAST -->
@@ -58,18 +84,19 @@
   <section class="hero-section">
     <canvas id="hero-canvas"></canvas>
     <div class="hero-content">
-      <div class="hero-badge">Финансовая безопасность · 2026</div>
+      <div class="hero-badge" data-i18n="hero.badge">Финансовая безопасность · 2026</div>
       <h1 class="hero-title">
-        <span class="line1">Сипари Молй —</span><br>
-        <span class="line2">лучшая защита.</span>
+        <span class="line1" data-i18n="hero.title1">Сипари Молй —</span><br>
+        <span class="line2" data-i18n="hero.title2">лучшая защита.</span>
       </h1>
-      <p class="hero-subtitle">
+      <p class="hero-subtitle" data-i18n="hero.subtitle">
         Платформа по финансовой безопасности и защите от мошенничества. 
         Узнайте схемы обмана, защитите свои средства и повысьте финансовую грамотность.
       </p>
       <div class="hero-buttons">
-        <button class="btn-primary" onclick="showPage('faq')">Узнать больше</button>
-        <button class="btn-secondary" onclick="showPage('game')">🎮 Играть</button>
+        <button class="btn-emergency" onclick="openEmergency()" data-i18n="hero.btnEmergency">🆘 Меня обманывают</button>
+        <button class="btn-primary" onclick="showPage('quiz')" data-i18n="hero.btnRisk">Проверить риск</button>
+        <button class="btn-secondary" onclick="showPage('faq')" data-i18n="hero.btnFaq">Справочник</button>
       </div>
       <div class="hero-stats">
         <div class="stat-item">
@@ -92,14 +119,82 @@
     </div>
   </section>
 
+  <section class="home-tools-section">
+    <div class="home-tools-inner">
+      <div class="progress-strip reveal" id="progress-strip">
+        <div class="progress-strip-head">
+          <span class="trust-badge" data-i18n="home.trust">✓ Проверено командой проекта</span>
+          <span class="progress-label" id="progress-label">Изучено 0 из 5 разделов</span>
+        </div>
+        <div class="progress-track"><div class="progress-track-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="emergency-block reveal">
+        <div class="emergency-block-head">
+          <div>
+            <div class="section-eyebrow" data-i18n="home.emergency.eyebrow">Экстренная помощь</div>
+            <h2 class="home-block-title" data-i18n="home.emergency.title">Что делать за первые 10 минут</h2>
+            <p class="home-block-desc" data-i18n="home.emergency.desc">Выберите ситуацию — получите пошаговый план действий и ссылки на справочник.</p>
+          </div>
+        </div>
+        <div class="emergency-grid">
+          <button class="emergency-btn" type="button" onclick="openEmergencyScenario('sms')">
+            <span class="emergency-btn-icon">📲</span>
+            <span class="emergency-btn-text" data-i18n="em.sms.short">Код из SMS</span>
+          </button>
+          <button class="emergency-btn" type="button" onclick="openEmergencyScenario('transfer')">
+            <span class="emergency-btn-icon">💸</span>
+            <span class="emergency-btn-text" data-i18n="em.transfer.short">Перевёл деньги</span>
+          </button>
+          <button class="emergency-btn" type="button" onclick="openEmergencyScenario('app')">
+            <span class="emergency-btn-icon">📱</span>
+            <span class="emergency-btn-text" data-i18n="em.app.short">Подозр. приложение</span>
+          </button>
+          <button class="emergency-btn" type="button" onclick="openEmergencyScenario('card')">
+            <span class="emergency-btn-icon">💳</span>
+            <span class="emergency-btn-text" data-i18n="em.card.short">Данные карты</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="home-cards-row reveal">
+        <div class="home-card risk-card">
+          <div class="home-card-tag" data-i18n="home.risk.tag">Быстрая проверка</div>
+          <h3 class="home-card-title" data-i18n="home.risk.title">Чек риска за 1 минуту</h3>
+          <p class="home-card-desc" data-i18n="home.risk.desc">3 вопроса — узнайте, насколько вы уязвимы к типичным схемам, и получите персональные рекомендации.</p>
+          <button class="btn-primary btn-sm" type="button" onclick="openRiskCheck()" data-i18n="home.risk.btn">Начать проверку</button>
+        </div>
+        <div class="home-card contacts-card">
+          <div class="home-card-tag" data-i18n="home.contacts.tag">Экстренные контакты</div>
+          <h3 class="home-card-title" data-i18n="home.contacts.title">Куда звонить прямо сейчас</h3>
+          <ul class="contacts-list">
+            <li data-content="home.contacts1" data-content-html="true"><strong>102</strong> — полиция (мошенничество)</li>
+            <li data-content="home.contacts2" data-content-html="true"><strong>1885</strong> — Национальный банк Таджикистана</li>
+            <li data-content="home.contacts3" data-content-html="true"><strong>115</strong> — единый номер доверия (РТ)</li>
+          </ul>
+          <p class="home-card-note" data-i18n="home.contacts.note">Не звоните по номерам из SMS — только официальные контакты.</p>
+          <button class="btn-secondary btn-sm" type="button" onclick="showPage('faq', { faq: 'faq-chargeback' })" data-i18n="home.contacts.btn">Что делать пошагово →</button>
+        </div>
+      </div>
+
+      <div class="scenario-links reveal">
+        <span class="scenario-links-label" data-i18n="home.scenarios">Сценарии обучения:</span>
+        <button type="button" class="scenario-chip" onclick="showPage('quiz')" data-i18n="home.scenario1">Квиз → FAQ</button>
+        <button type="button" class="scenario-chip" onclick="showPage('news')" data-i18n="home.scenario2">Новости → Кодекс</button>
+        <button type="button" class="scenario-chip" onclick="showPage('game', { game: 'scam' })" data-i18n="home.scenario3">Игра → Практика</button>
+        <button type="button" class="scenario-chip" onclick="showPage('diary')" data-i18n="home.scenario4">Дневник → Контроль</button>
+      </div>
+    </div>
+  </section>
+
   <section class="about-section">
     <div class="about-grid">
       <div class="about-text reveal">
-        <div class="section-eyebrow">О проекте</div>
-        <h2 class="section-title">Финансовая грамотность —<br>щит против мошенников</h2>
-        <p>«Сипари Молй» — информационно-образовательная платформа, созданная студентами для повышения уровня финансовой грамотности населения Таджикистана.</p>
-        <p>Наш девиз: <strong style="color:var(--cyan)">«Сипари Молй — сипари шумо аз қаллобӣ»</strong> — мы ваш щит против мошенников в финансовом мире.</p>
-        <p>Проект охватывает все аспекты финансовой безопасности: от защиты банковских карт до распознавания фишинга и телефонного мошенничества.</p>
+        <div class="section-eyebrow" data-i18n="about.eyebrow">О проекте</div>
+        <h2 class="section-title" data-i18n="about.title" data-i18n-html="true">Финансовая грамотность —<br>щит против мошенников</h2>
+        <p data-content="about.p1" data-content-html="true">«Сипари Молй» — информационно-образовательная платформа, созданная студентами для повышения уровня финансовой грамотности населения Таджикистана.</p>
+        <p data-content="about.p2" data-content-html="true">Наш девиз: <strong style="color:var(--cyan)">«Сипари Молй — сипари шумо аз қаллобӣ»</strong> — мы ваш щит против мошенников в финансовом мире.</p>
+        <p data-content="about.p3">Проект охватывает все аспекты финансовой безопасности: от защиты банковских карт до распознавания фишинга и телефонного мошенничества.</p>
         <div class="team-chips" style="margin-top:var(--space-6)">
           <div class="team-chip"><div class="avatar">Л</div>Мухамадиева Латифа</div>
           <div class="team-chip"><div class="avatar">З</div>Асадуллозода Зулайхо</div>
@@ -108,22 +203,22 @@
         </div>
       </div>
       <div class="features-grid reveal">
-        <div class="feature-card">
+        <div class="feature-card" data-feature>
           <div class="feature-icon">🛡️</div>
           <div class="feature-title">Защита от мошенников</div>
           <div class="feature-desc">Узнайте схемы и методы мошенников до того, как попадёте в ловушку</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" data-feature>
           <div class="feature-icon">📚</div>
           <div class="feature-title">Финансовая грамотность</div>
           <div class="feature-desc">Повышайте знания через статьи, FAQ и интерактивные тесты</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" data-feature>
           <div class="feature-icon">💰</div>
           <div class="feature-title">Дневник денег</div>
           <div class="feature-desc">Контролируйте доходы, расходы и финансовые цели</div>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" data-feature>
           <div class="feature-icon">⚖️</div>
           <div class="feature-title">Правовая база</div>
           <div class="feature-desc">Статья 247 УК РТ — знайте права и наказания за мошенничество</div>
@@ -136,154 +231,57 @@
 <!-- =================== KODEKS PAGE =================== -->
 <div class="page" id="page-kodeks">
   <div class="page-header">
-    <div class="section-eyebrow">Законодательство</div>
-    <h1 class="section-title">Статья 247. Мошенничество</h1>
-    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7">Уголовный кодекс Республики Таджикистан устанавливает ответственность за мошенничество — хищение чужого имущества путём обмана или злоупотребления доверием.</p>
+    <div class="section-eyebrow" data-content="page.kodeks.eyebrow">Законодательство</div>
+    <h1 class="section-title" data-i18n="page.kodeks.title">Статья 247. Мошенничество</h1>
+    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7" data-content="page.kodeks.subtitle">Уголовный кодекс Республики Таджикистан устанавливает ответственность за мошенничество — хищение чужого имущества путём обмана или злоупотребления доверием.</p>
   </div>
   <div class="kodeks-section">
-    <div class="article-intro">
+    <div class="article-intro" data-content="page.kodeks.intro" data-content-html="true">
       <strong style="color:var(--cyan)">Мошенничество</strong> — это хищение чужого имущества или приобретение права на чужое имущество путём обмана либо злоупотребления доверием.
     </div>
-
-    <div class="accordion-item" data-acc>
-      <button class="accordion-trigger" onclick="toggleAcc(this)">
-        <div class="accordion-trigger-left">
-          <div class="accordion-num">1</div>
-          <span class="accordion-title">Часть 1 — Базовое мошенничество</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:var(--space-3)">
-          <span class="accordion-badge">до 2 лет</span>
-          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-      </button>
-      <div class="accordion-body">
-        <div class="accordion-content">
-          <div class="article-sub">
-            <p>Хищение чужого имущества или приобретение права на чужое имущество путём обмана либо злоупотребления доверием:</p>
-          </div>
-          <div class="penalty-box">
-            <strong>⚖️ Наказание</strong>
-            <span>Штраф от 250 до 365 показателей для расчётов, или ограничение свободы до 3 лет, или лишение свободы до 2 лет. (ЗРТ 21.07.10 №617)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item" data-acc>
-      <button class="accordion-trigger" onclick="toggleAcc(this)">
-        <div class="accordion-trigger-left">
-          <div class="accordion-num">2</div>
-          <span class="accordion-title">Часть 2 — Квалифицирующие обстоятельства</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:var(--space-3)">
-          <span class="accordion-badge">до 5 лет</span>
-          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-      </button>
-      <div class="accordion-body">
-        <div class="accordion-content">
-          <ul class="article-list">
-            <li data-item="а">Совершённое повторно</li>
-            <li data-item="б">Группой лиц по предварительному сговору</li>
-            <li data-item="в">Причинившее значительный ущерб гражданину</li>
-            <li data-item="г">Лицом с использованием своего служебного положения</li>
-          </ul>
-          <div class="penalty-box">
-            <strong>⚖️ Наказание</strong>
-            <span>Штраф от 365 до 912 показателей для расчётов или лишение свободы от 2 до 5 лет с лишением права занимать должности до 5 лет или без такового. (ЗРТ 17.05.04 №35; ЗРТ 21.07.10 №617)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item" data-acc>
-      <button class="accordion-trigger" onclick="toggleAcc(this)">
-        <div class="accordion-trigger-left">
-          <div class="accordion-num">3</div>
-          <span class="accordion-title">Часть 3 — Крупный размер, организованная группа</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:var(--space-3)">
-          <span class="accordion-badge">до 8 лет</span>
-          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-      </button>
-      <div class="accordion-body">
-        <div class="accordion-content">
-          <ul class="article-list">
-            <li data-item="а">В крупном размере</li>
-            <li data-item="б">Организованной группой</li>
-            <li data-item="в">При опасном рецидиве</li>
-          </ul>
-          <div class="penalty-box">
-            <strong>⚖️ Наказание</strong>
-            <span>Штраф от 912 до 1460 показателей или лишение свободы от 5 до 8 лет с конфискацией имущества или без таковой и лишением права занимать должности до 5 лет. (ЗРТ 21.07.10 №617)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item" data-acc>
-      <button class="accordion-trigger" onclick="toggleAcc(this)">
-        <div class="accordion-trigger-left">
-          <div class="accordion-num">4</div>
-          <span class="accordion-title">Часть 4 — Особо опасный рецидив, особо крупный размер</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:var(--space-3)">
-          <span class="accordion-badge">до 12 лет</span>
-          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-      </button>
-      <div class="accordion-body">
-        <div class="accordion-content">
-          <ul class="article-list">
-            <li data-item="а">При особо опасном рецидиве</li>
-            <li data-item="б">В особо крупном размере</li>
-          </ul>
-          <div class="penalty-box">
-            <strong>⚖️ Наказание</strong>
-            <span>Штраф от 1460 до 2190 показателей или лишение свободы от 8 до 12 лет с конфискацией имущества и лишением права занимать должности до 5 лет или без такового. (ЗРТ 21.07.10 №617)</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="kodeks-parts"></div>
   </div>
 </div>
 
 <!-- =================== DIARY PAGE =================== -->
 <div class="page" id="page-diary">
   <div class="page-header">
-    <div class="section-eyebrow">Личные финансы</div>
-    <h1 class="section-title">Дневник денег</h1>
-    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7">Отслеживайте доходы и расходы, ставьте финансовые цели и контролируйте свой бюджет.</p>
+    <div class="section-eyebrow" data-content="page.diary.eyebrow">Личные финансы</div>
+    <h1 class="section-title" data-i18n="page.diary.title">Дневник денег</h1>
+    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7" data-content="page.diary.subtitle">Отслеживайте доходы и расходы, ставьте финансовые цели и контролируйте свой бюджет.</p>
+    <div class="bridge-banner">
+      <strong data-content="page.diary.bridgeTitle">Зачем это здесь?</strong> <span data-content="page.diary.bridgeText">Контроль расходов помогает заметить подозрительные списания, не попасть в импульсивные переводы мошенникам и накопить резервный фонд — вашу «подушку» на случай финансового удара.</span>
+      <button type="button" class="bridge-link" onclick="showPage('faq', { faq: 'faq-chargeback' })" data-content="page.diary.bridgeLink">Как действовать при краже →</button>
+    </div>
   </div>
   <div class="diary-section">
     <div class="diary-grid">
       <aside>
         <div class="balance-card">
-          <div class="balance-label">Текущий баланс</div>
+          <div class="balance-label" data-content="diary.balance">Текущий баланс</div>
           <div class="balance-value" id="balance-display">0 сомони</div>
           <div class="balance-row">
-            <span class="bal-label">Доходы</span>
+            <span class="bal-label" data-content="diary.income">Доходы</span>
             <span class="bal-amount bal-income" id="total-income">0</span>
           </div>
           <div class="balance-row">
-            <span class="bal-label">Расходы</span>
+            <span class="bal-label" data-content="diary.expense">Расходы</span>
             <span class="bal-amount bal-expense" id="total-expense">0</span>
           </div>
-          <button class="add-btn" onclick="toggleForm()">+ Добавить транзакцию</button>
+          <button class="add-btn" onclick="toggleForm()" data-content="diary.addTx">+ Добавить транзакцию</button>
 
           <div class="goals-section">
-            <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:var(--space-4);margin-top:var(--space-6);font-weight:700">Цели на месяц</div>
+            <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:var(--space-4);margin-top:var(--space-6);font-weight:700" data-content="diary.goals">Цели на месяц</div>
             <div class="goal-item">
-              <div class="goal-header"><span class="goal-name">🚨 Резервный фонд</span><span class="goal-pct" id="gp1">0%</span></div>
+              <div class="goal-header"><span class="goal-name" data-content="diary.goal1">🚨 Резервный фонд</span><span class="goal-pct" id="gp1">0%</span></div>
               <div class="goal-bar"><div class="goal-fill" id="gf1" style="width:0%"></div></div>
             </div>
             <div class="goal-item">
-              <div class="goal-header"><span class="goal-name">📱 Новый телефон</span><span class="goal-pct" id="gp2">0%</span></div>
+              <div class="goal-header"><span class="goal-name" data-content="diary.goal2">📱 Новый телефон</span><span class="goal-pct" id="gp2">0%</span></div>
               <div class="goal-bar"><div class="goal-fill" id="gf2" style="width:0%"></div></div>
             </div>
             <div class="goal-item">
-              <div class="goal-header"><span class="goal-name">✈️ Путешествие</span><span class="goal-pct" id="gp3">0%</span></div>
+              <div class="goal-header"><span class="goal-name" data-content="diary.goal3">✈️ Путешествие</span><span class="goal-pct" id="gp3">0%</span></div>
               <div class="goal-bar"><div class="goal-fill" id="gf3" style="width:0%"></div></div>
             </div>
           </div>
@@ -292,22 +290,22 @@
 
       <main class="diary-main">
         <div class="add-form" id="add-form">
-          <h3 style="font-family:var(--font-display);font-weight:700;margin-bottom:var(--space-5);font-size:var(--text-base)">Новая транзакция</h3>
+          <h3 style="font-family:var(--font-display);font-weight:700;margin-bottom:var(--space-5);font-size:var(--text-base)" data-content="diary.newTx">Новая транзакция</h3>
           <div class="type-toggle">
-            <button class="type-btn active-income" id="type-income" onclick="setType('income')">+ Доход</button>
-            <button class="type-btn" id="type-expense" onclick="setType('expense')">− Расход</button>
+            <button class="type-btn active-income" id="type-income" onclick="setType('income')" data-content="diary.typeIncome">+ Доход</button>
+            <button class="type-btn" id="type-expense" onclick="setType('expense')" data-content="diary.typeExpense">− Расход</button>
           </div>
           <div class="form-grid">
             <div class="form-group">
-              <label for="tx-name">Название</label>
+              <label for="tx-name" data-content="diary.labelName">Название</label>
               <input type="text" id="tx-name" placeholder="Зарплата, еда...">
             </div>
             <div class="form-group">
-              <label for="tx-amount">Сумма (сомони)</label>
+              <label for="tx-amount" data-content="diary.labelAmount">Сумма (сомони)</label>
               <input type="number" id="tx-amount" placeholder="0">
             </div>
             <div class="form-group">
-              <label for="tx-cat">Категория</label>
+              <label for="tx-cat" data-content="diary.labelCat">Категория</label>
               <select id="tx-cat">
                 <option>💼 Работа</option>
                 <option>🍔 Еда</option>
@@ -323,11 +321,11 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="tx-date">Дата</label>
+              <label for="tx-date" data-content="diary.labelDate">Дата</label>
               <input type="date" id="tx-date">
             </div>
           </div>
-          <button class="save-btn" onclick="addTransaction()">Сохранить</button>
+          <button class="save-btn" onclick="addTransaction()" data-content="diary.save">Сохранить</button>
         </div>
 
         <div class="transactions" id="transactions-list">
@@ -335,8 +333,8 @@
         </div>
         <div id="empty-tx" style="text-align:center;padding:var(--space-12);color:var(--text-muted)">
           <div style="font-size:3rem;margin-bottom:var(--space-4)">💸</div>
-          <div style="font-weight:700;margin-bottom:var(--space-2)">Транзакций пока нет</div>
-          <div style="font-size:var(--text-sm)">Нажмите «+ Добавить транзакцию» чтобы начать</div>
+          <div style="font-weight:700;margin-bottom:var(--space-2)" data-content="diary.emptyTitle">Транзакций пока нет</div>
+          <div style="font-size:var(--text-sm)" data-content="diary.emptyDesc">Нажмите «+ Добавить транзакцию» чтобы начать</div>
         </div>
       </main>
     </div>
@@ -346,181 +344,20 @@
 <!-- =================== FAQ PAGE =================== -->
 <div class="page" id="page-faq">
   <div class="page-header">
-    <div class="section-eyebrow">Справочник</div>
-    <h1 class="section-title">Частые вопросы о мошенничестве</h1>
-    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7">Всё, что нужно знать о финансовом мошенничестве и методах защиты.</p>
+    <div class="section-eyebrow" data-content="page.faq.eyebrow">Справочник</div>
+    <h1 class="section-title" data-i18n="page.faq.title">Частые вопросы о мошенничестве</h1>
+    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7" data-content="page.faq.subtitle">Всё, что нужно знать о финансовом мошенничестве и методах защиты.</p>
   </div>
-  <div class="faq-section">
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">📞 Что такое вишинг?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <p><strong>Вишинг (vishing)</strong> — вид мошенничества, когда злоумышленники звонят по телефону и пытаются выманить деньги или личные данные. Слово от <em>voice</em> (голос) + <em>phishing</em> (фишинг).</p>
-          <div class="info-box warning">
-            <div class="box-title">⚠️ Как работает вишинг</div>
-            «Мы из банка, ваш счёт взломан» · «Назовите код из SMS» · «Срочно переведите деньги на безопасный счёт»
-          </div>
-          <p><strong>Главные признаки:</strong> вас торопят («срочно, прямо сейчас»), пугают («у вас украдут деньги»), просят секретные данные, звонят с подозрительного номера.</p>
-          <div class="info-box tip">
-            <div class="box-title">🛡️ Что делать</div>
-            Не сообщайте коды и пароли · Положите трубку и сам позвоните в банк по официальному номеру · Не доверяйте «сотрудникам банка» по звонку
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">🎣 Что такое фишинг?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <p><strong>Фишинг</strong> — мошенничество через поддельные сайты или письма, имитирующие банки, магазины и сервисы. Цель — украсть логин, пароль или данные карты.</p>
-          <div class="info-box warning">
-            <div class="box-title">⚠️ Новая схема — Fake Captcha</div>
-            Вы заходите на взломанный сайт → видите фальшивую CAPTCHA → вас просят нажать комбинацию клавиш и открыть командную строку → вставленный код устанавливает вирус, который крадёт пароли, куки и данные карт. Ни Google, ни Cloudflare никогда не просят открывать терминал!
-          </div>
-          <div class="info-box tip">
-            <div class="box-title">🛡️ Защита</div>
-            Проверяйте URL в адресной строке · Используйте 2FA · Не переходите по ссылкам из SMS/email о «выигрышах» или «блокировках»
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">📱 Что такое смишинг?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <p><strong>Смишинг (smishing)</strong> — мошенничество через SMS-сообщения. Слово от <em>SMS</em> + <em>phishing</em>.</p>
-          <p>Типичные схемы: «Вы выиграли приз, перейдите по ссылке», «Ваша карта заблокирована», «Посылка задержана, подтвердите данные».</p>
-          <div class="info-box tip">
-            <div class="box-title">🛡️ Как защититься</div>
-            Никогда не переходите по ссылкам из SMS · Не вводите данные карты по запросу из SMS · Проверяйте номер отправителя · Звоните в банк по официальному номеру на карте
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">💼 Что такое джоб-фишинг (мошенничество при поиске работы)?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <p><strong>Джоб-фишинг</strong> — мошенники притворяются работодателями, чтобы украсть деньги или данные. Особенно часто обманывают тех, кто ищет удалённую работу.</p>
-          <p><em>Реальный случай:</em> Мать пятерых детей Карина Щукина искала работу копирайтером. Ей позвонили «работодатели» и попросили включить демонстрацию экрана. За несколько минут они увидели SMS-коды и списали 275 000 рублей.</p>
-          <div class="info-box warning">
-            <div class="box-title">⚠️ Признаки мошенников-работодателей</div>
-            Просят оплатить «доступ к базе вакансий» или «оформление» · Просят показать экран телефона · Присылают ссылки на сайты-клоны hh.ru · Предлагают «работу без опыта, зарплата выше рынка»
-          </div>
-          <div class="info-box success">
-            <div class="box-title">✅ Запомните</div>
-            Настоящий работодатель платит ВАМ, а не наоборот. Никогда не показывайте экран с кодами подтверждения.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">💳 Что делать, если списали деньги с карты?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <ul class="step-list">
-            <li><span class="step-num">1</span>Немедленно заблокируйте карту через приложение или звонком в банк</li>
-            <li><span class="step-num">2</span>Запросите выписку в отделении банка для подтверждения операции</li>
-            <li><span class="step-num">3</span>Напишите «заявление о несогласии с операцией» (чарджбэк) — у вас есть 1 сутки</li>
-            <li><span class="step-num">4</span>Сообщите в полицию, получите талон-уведомление</li>
-            <li><span class="step-num">5</span>Сохраните все доказательства: скриншоты, письма, СМС</li>
-          </ul>
-          <div class="info-box tip">
-            <div class="box-title">ℹ️ Когда банк вернёт деньги</div>
-            Банк возвращает деньги, если сам нарушил требования безопасности (пропустил транзакцию на счёт из «чёрного списка»). Если вы сами передали данные — возврат маловероятен.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">📞 Как распознать мошенника по телефону?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <p><strong>Мошенники-«сотрудники банка»</strong> всегда звонят сами и создают срочность.</p>
-          <div class="info-box warning">
-            <div class="box-title">🚨 Красные флаги</div>
-            Представляются ФСБ, ЦБ, службой безопасности банка · Сообщают о «подозрительной операции» · Просят PIN, CVC/CVV, коды из SMS · Давят: «решите прямо сейчас» · Просят установить приложение или включить демонстрацию экрана
-          </div>
-          <div class="info-box success">
-            <div class="box-title">✅ Правило 1</div>
-            Настоящий банк никогда не попросит назвать PIN-код или полный номер карты по телефону. При малейшем сомнении — кладите трубку и перезванивайте сами.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">🏦 Что делать, если мошенники оформили кредит на ваше имя?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <ul class="step-list">
-            <li><span class="step-num">1</span>Немедленно уведомите банк о факте мошенничества</li>
-            <li><span class="step-num">2</span>Напишите заявление о непричастности к сделке</li>
-            <li><span class="step-num">3</span>Требуйте признать договор кредита недействительным</li>
-            <li><span class="step-num">4</span>Обратитесь в полицию с заявлением о мошенничестве</li>
-            <li><span class="step-num">5</span>Проверьте кредитную историю и заблокируйте все данные</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">🔒 Как защититься от онлайн-мошенников?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-body">
-        <div class="faq-content">
-          <div class="info-box tip">
-            <div class="box-title">🛡️ Топ-правила безопасности</div>
-          </div>
-          <ul class="step-list">
-            <li><span class="step-num">✓</span>Включите двухфакторную аутентификацию во всех банковских приложениях</li>
-            <li><span class="step-num">✓</span>Не переходите по ссылкам из SMS/email о «выигрышах» и «блокировках»</li>
-            <li><span class="step-num">✓</span>Никогда не включайте «демонстрацию экрана» при разговоре с незнакомцами</li>
-            <li><span class="step-num">✓</span>Используйте отдельную карту с лимитом для онлайн-покупок</li>
-            <li><span class="step-num">✓</span>Регулярно проверяйте выписку по карте</li>
-            <li><span class="step-num">✓</span>Не сохраняйте данные карты в браузере на общих устройствах</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+  <div class="faq-section" id="faq-section">
   </div>
 </div>
 
 <!-- =================== QUIZ PAGE =================== -->
 <div class="page" id="page-quiz">
   <div class="page-header">
-    <div class="section-eyebrow">Самопроверка</div>
-    <h1 class="section-title">Проверь себя</h1>
-    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7">10 вопросов о финансовой безопасности и мошенничестве. Проверьте свои знания!</p>
+    <div class="section-eyebrow" data-content="page.quiz.eyebrow">Самопроверка</div>
+    <h1 class="section-title" data-i18n="page.quiz.title">Проверь себя</h1>
+    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7" data-content="page.quiz.subtitle">10 вопросов о финансовой безопасности и мошенничестве. Проверьте свои знания!</p>
   </div>
   <div class="quiz-section">
     <div class="quiz-progress">
@@ -532,7 +369,7 @@
       <div class="result-medal" id="result-medal">🥇</div>
       <div class="result-score" id="result-score">10 / 10</div>
       <div class="result-msg" id="result-msg">Отлично!</div>
-      <button class="result-restart" onclick="startQuiz()">Пройти снова</button>
+      <button class="result-restart" onclick="startQuiz()" data-content="quiz.restart">Пройти снова</button>
     </div>
   </div>
 </div>
@@ -540,23 +377,26 @@
 <!-- =================== GAME PAGE =================== -->
 <div class="page" id="page-game">
   <div class="page-header">
-    <div class="section-eyebrow">Интерактив</div>
-    <h1 class="section-title">Финансовые мини-игры</h1>
-    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7">Два режима: поймай мошенников и сыграй в биржевого трейдера!</p>
+    <div class="section-eyebrow" data-content="page.game.eyebrow">Интерактив</div>
+    <h1 class="section-title" data-i18n="page.game.title">Финансовые мини-игры</h1>
+    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7" data-content="page.game.subtitle">Пять режимов: ловите мошенников, торгуйте на бирже, распознавайте скам, находите фишинг и не попадайтесь в финансовую пирамиду!</p>
   </div>
   <div class="game-section">
     <div class="game-tabs">
-      <button class="game-tab active" onclick="switchGame('fraud')" id="tab-fraud">🚨 Поймай мошенника</button>
-      <button class="game-tab" onclick="switchGame('invest')" id="tab-invest">📈 Биржа Молй</button>
+      <button class="game-tab active" onclick="switchGame('fraud')" id="tab-fraud" data-i18n="game.tab.fraud">🚨 Поймай мошенника</button>
+      <button class="game-tab" onclick="switchGame('invest')" id="tab-invest" data-i18n="game.tab.invest">📈 Биржа Молй</button>
+      <button class="game-tab" onclick="switchGame('scam')" id="tab-scam" data-i18n="game.tab.scam">🕵️ Скам или правда?</button>
+      <button class="game-tab" onclick="switchGame('phish')" id="tab-phish" data-i18n="game.tab.phish">🔗 Найди фишинг</button>
+      <button class="game-tab" onclick="switchGame('pyramid')" id="tab-pyramid" data-i18n="game.tab.pyramid">💸 Пирамида</button>
     </div>
 
     <!-- FRAUD CATCHER GAME -->
     <div class="game-panel active" id="game-fraud">
       <div class="game-hud">
-        <div class="hud-item"><div class="hud-label">Счёт</div><div class="hud-val" id="fraud-score">0</div></div>
-        <div class="hud-item"><div class="hud-label">Жизни</div><div class="hud-val" id="fraud-lives">❤️❤️❤️</div></div>
-        <div class="hud-item"><div class="hud-label">Время</div><div class="hud-val" id="fraud-timer">30</div></div>
-        <div class="hud-item"><div class="hud-label">Уровень</div><div class="hud-val" id="fraud-level">1</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.score">Счёт</div><div class="hud-val" id="fraud-score">0</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.lives">Жизни</div><div class="hud-val" id="fraud-lives">❤️❤️❤️</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.time">Время</div><div class="hud-val" id="fraud-timer">30</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.level">Уровень</div><div class="hud-val" id="fraud-level">1</div></div>
       </div>
       <div id="fraud-canvas-wrap">
         <canvas id="fraud-canvas" width="800" height="400"></canvas>
@@ -568,8 +408,8 @@
         </div>
       </div>
       <div class="game-instructions" style="margin-top:var(--space-6)">
-        <h3>Правила игры</h3>
-        <ul>
+        <h3 id="fraud-rules-title">Правила игры</h3>
+        <ul id="fraud-rules-list">
           <li>Нажимай на мошенников 🦹 — получаешь очки</li>
           <li>Не нажимай на честных граждан 👤 — теряешь жизнь</li>
           <li>Мошенники мигают красным, граждане — синим</li>
@@ -583,37 +423,119 @@
     <div class="game-panel" id="game-invest">
       <div class="market-display">
         <div class="market-header">
-          <span class="market-title">📊 Биржа Молй — Симулятор трейдера</span>
+          <span class="market-title" data-content="game.invest.title">📊 Биржа Молй — Симулятор трейдера</span>
           <span class="market-round" id="invest-round">Раунд 1 / 10</span>
         </div>
         <canvas id="market-chart-canvas" height="160"></canvas>
       </div>
 
-      <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:var(--space-4);font-weight:700;text-transform:uppercase;letter-spacing:.08em">Выберите актив для покупки/продажи</div>
+      <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:var(--space-4);font-weight:700;text-transform:uppercase;letter-spacing:.08em" data-content="game.invest.select">Выберите актив для покупки/продажи</div>
       <div class="assets-grid" id="assets-grid">
         <!-- populated by JS -->
       </div>
 
       <div id="selected-asset-info" style="display:none;padding:var(--space-4);background:var(--surface);border:1px solid var(--cyan);border-radius:var(--radius-lg);margin-bottom:var(--space-4)">
-        <div style="font-size:var(--text-xs);color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--space-2)">Выбран актив</div>
+        <div style="font-size:var(--text-xs);color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--space-2)" data-content="game.invest.selected">Выбран актив</div>
         <div style="font-weight:700;font-size:var(--text-base)" id="selected-name">-</div>
         <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px" id="selected-detail">-</div>
       </div>
 
       <div class="invest-controls">
-        <button class="invest-btn buy-btn" onclick="investBuy()">Купить</button>
-        <button class="invest-btn sell-btn" onclick="investSell()">Продать</button>
-        <button class="invest-btn next-round-btn" onclick="investNextRound()">Следующий раунд →</button>
+        <button class="invest-btn buy-btn" onclick="investBuy()" data-content="game.invest.buy">Купить</button>
+        <button class="invest-btn sell-btn" onclick="investSell()" data-content="game.invest.sell">Продать</button>
+        <button class="invest-btn next-round-btn" onclick="investNextRound()" data-content="game.invest.next">Следующий раунд →</button>
       </div>
 
       <div class="invest-portfolio">
         <div class="portfolio-header">
-          <span class="portfolio-title">💼 Мой портфель</span>
+          <span class="portfolio-title" data-content="game.invest.portfolio">💼 Мой портфель</span>
           <span class="portfolio-total" id="portfolio-total">1 000 сомони</span>
         </div>
         <div class="portfolio-rows" id="portfolio-rows">
-          <div class="portfolio-row"><span class="pr-name">💵 Наличные</span><span class="pr-val" id="cash-val">1 000 сомони</span></div>
+          <div class="portfolio-row"><span class="pr-name" data-content="game.invest.cash">💵 Наличные</span><span class="pr-val" id="cash-val">1 000 сомони</span></div>
         </div>
+      </div>
+    </div>
+
+    <!-- SCAM OR SAFE GAME -->
+    <div class="game-panel" id="game-scam">
+      <div class="game-hud">
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.score">Счёт</div><div class="hud-val" id="scam-score">0</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.round">Раунд</div><div class="hud-val" id="scam-round">1 / 8</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.streak">Серия</div><div class="hud-val" id="scam-streak">0</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.time">Время</div><div class="hud-val" id="scam-timer">12</div></div>
+      </div>
+      <div class="scam-card-wrap" id="scam-card-wrap">
+        <div class="scam-scenario-card" id="scam-scenario">
+          <div class="scam-scenario-icon" id="scam-icon">📱</div>
+          <p class="scam-scenario-text" id="scam-text">Нажмите «Начать», чтобы проверить, сможете ли вы отличить мошенничество от безопасной ситуации.</p>
+        </div>
+        <div class="scam-feedback" id="scam-feedback"></div>
+        <div class="scam-actions" id="scam-actions">
+          <button class="game-start-btn" id="scam-start-btn" onclick="startScamGame()">▶ Начать игру</button>
+        </div>
+      </div>
+      <div class="game-instructions" style="margin-top:var(--space-6)">
+        <h3 id="scam-rules-title">Правила игры</h3>
+        <ul id="scam-rules-list">
+          <li>Читайте ситуацию и решайте: это мошенничество или безопасно</li>
+          <li>На каждый ответ — 12 секунд, за серию правильных ответов больше очков</li>
+          <li>После ответа вы увидите объяснение — учитесь на каждом раунде</li>
+          <li>8 реальных сценариев из жизни: SMS, звонки, Telegram, работа</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PHISH HUNT GAME -->
+    <div class="game-panel" id="game-phish">
+      <div class="game-hud">
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.score">Счёт</div><div class="hud-val" id="phish-score">0</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.round">Раунд</div><div class="hud-val" id="phish-round">1 / 6</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.mistakes">Ошибки</div><div class="hud-val" id="phish-miss">0 / 3</div></div>
+      </div>
+      <div class="phish-wrap">
+        <p class="phish-prompt" id="phish-prompt" data-i18n="phish.prompt">Найдите поддельную ссылку — ту, которую прислали мошенники.</p>
+        <div class="phish-url-grid" id="phish-url-grid"></div>
+        <div class="phish-hint" id="phish-hint"></div>
+        <button class="game-start-btn" id="phish-start-btn" onclick="startPhishGame()" data-i18n="phish.start">▶ Начать игру</button>
+      </div>
+      <div class="game-instructions" style="margin-top:var(--space-6)">
+        <h3 id="phish-rules-title">Правила игры</h3>
+        <ul id="phish-rules-list">
+          <li>Обращайте внимание на буквы вроде rn вместо m, лишние дефисы и странные домены</li>
+          <li>3 ошибки — игра окончена</li>
+          <li>Настоящие банки никогда не просят данные по ссылке из SMS</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PYRAMID GAME -->
+    <div class="game-panel" id="game-pyramid">
+      <div class="game-hud">
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.balance">Баланс</div><div class="hud-val" id="pyr-balance">1 000 с.</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.round">Раунд</div><div class="hud-val" id="pyr-round">0</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.yield">Доход</div><div class="hud-val" id="pyr-yield">—</div></div>
+        <div class="hud-item"><div class="hud-label" data-content="game.hud.risk">Риск</div><div class="hud-val" id="pyr-risk">0%</div></div>
+      </div>
+      <div class="pyramid-wrap">
+        <div class="pyramid-visual" id="pyramid-visual">
+          <div class="pyramid-block pyr-top">💰</div>
+          <div class="pyramid-block pyr-mid">📈 +<span id="pyr-pct">0</span>%</div>
+          <div class="pyramid-block pyr-base">🪤 «Супер-проект»</div>
+        </div>
+        <p class="pyramid-desc" id="pyramid-desc">Вам обещают 15% в месяц — «гарантированно». Чем дольше вы не выводите деньги, тем выше риск обвала пирамиды.</p>
+        <div class="pyramid-actions" id="pyramid-actions">
+          <button class="game-start-btn" onclick="startPyramidGame()">▶ Начать игру</button>
+        </div>
+        <div class="pyramid-log" id="pyramid-log"></div>
+      </div>
+      <div class="game-instructions" style="margin-top:var(--space-6)">
+        <h3 id="pyramid-rules-title">Правила игры</h3>
+        <ul id="pyramid-rules-list">
+          <li>«Реинвестировать» — остаться в игре и рискнуть всем балансом</li>
+          <li>«Вывести деньги» — забрать выигрыш и закончить игру победителем</li>
+          <li>Если пирамида рухнет — вы теряете всё. Так работают схемы Понци</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -622,19 +544,297 @@
 <!-- =================== NEWS PAGE =================== -->
 <div class="page" id="page-news">
   <div class="page-header">
-    <div class="section-eyebrow">Актуально</div>
-    <h1 class="section-title">Новости финансовой безопасности</h1>
-    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7">Последние случаи мошенничества и советы по защите от банков и экспертов.</p>
+    <div class="section-eyebrow" data-content="page.news.eyebrow">Актуально</div>
+    <h1 class="section-title" data-i18n="page.news.title">Новости финансовой безопасности</h1>
+    <p style="color:var(--text-muted);max-width:65ch;line-height:1.7" data-content="page.news.subtitle">Последние случаи мошенничества и советы по защите от банков и экспертов.</p>
+    <div class="news-meta-bar">
+      <span class="news-updated-badge" id="news-updated-badge" data-i18n="news.updated">Обновлено: 25 мая 2026</span>
+      <span class="news-source-note" data-content="page.news.source" data-content-html="true">Источники: ФИНфорс, Азия-Плюс, банки · Статья 247 УК →</span>
+    </div>
   </div>
   <div class="news-section">
     <div class="news-tip-banner">
       <div class="tip-icon">💡</div>
       <div class="tip-content">
-        <h3>Совет недели</h3>
-        <p>Никогда не включайте «демонстрацию экрана» при видеозвонке с незнакомыми людьми. Мошенники могут видеть коды из SMS и получить доступ к вашему банку за считанные секунды.</p>
+        <h3 data-content="page.news.tipTitle">Совет недели</h3>
+        <p data-content="page.news.tipText">Никогда не включайте «демонстрацию экрана» при видеозвонке с незнакомыми людьми. Мошенники могут видеть коды из SMS и получить доступ к вашему банку за считанные секунды.</p>
       </div>
     </div>
-    <div class="news-grid">
+    <div class="news-toolbar">
+      <div class="news-filters" id="news-filters">
+        <button type="button" class="news-filter active" data-filter="all" data-i18n="news.filter.all">Все</button>
+        <button type="button" class="news-filter" data-filter="calls" data-i18n="news.filter.calls">Звонки</button>
+        <button type="button" class="news-filter" data-filter="sms" data-i18n="news.filter.sms">SMS</button>
+        <button type="button" class="news-filter" data-filter="banks" data-i18n="news.filter.banks">Банки</button>
+        <button type="button" class="news-filter" data-filter="social" data-i18n="news.filter.social">Соцсети</button>
+        <button type="button" class="news-filter" data-filter="jobs" data-i18n="news.filter.jobs">Вакансии</button>
+      </div>
+      <select class="news-sort" id="news-sort" aria-label="Сортировка новостей">
+        <option value="new" data-i18n="news.sort.new">Сначала новые</option>
+        <option value="important" data-i18n="news.sort.important">Важные</option>
+      </select>
+    </div>
+    <div class="news-grid" id="news-grid">
+      <article class="news-card">
+        <div class="news-img-placeholder">📚</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">ЕГЭ по финансовой безопасности: проверим ваши знания!</h2>
+          <p class="news-desc">Сейчас из каждого утюга говорят про экзамены — мы подхватили этот вайб и предлагаем прочувствовать атмосферу подготовки к ЕГЭ. Но проверять будем не математику или физику, а вашу финансовую безопасность. Присоединяйтесь, будем решать вместе!</p>
+          <div class="news-footer">
+            <span class="news-date">25 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🚨</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">ОСТОРОЖНО: Ваша доброта — их оружие!</h2>
+          <p class="news-desc">Когда вы берёте чужой телефон, на нём уже идёт скрытый видеозвонок или запись экрана. Камера снимает лицо, микрофон — голос. С помощью ИИ мошенники создают вашего цифрового клона и обнуляют кредитные лимиты в банках.</p>
+          <div class="news-footer">
+            <span class="news-date">23 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">📱</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Мошенничество в Telegram: как не остаться без аккаунта</h2>
+          <p class="news-desc">Три свежие схемы, которыми мошенники разводят пользователей прямо сейчас. Рассказываем, как распознать ловушку и сохранить доступ к своему аккаунту.</p>
+          <div class="news-footer">
+            <span class="news-date">21 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🔎</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Опрос: угадайте данные Банка России за 1 квартал 2026</h2>
+          <p class="news-desc">Недавно опубликованы данные от Банка России за 1 квартал 2026 года. Предлагаем пройти опрос и попробовать угадать результаты!</p>
+          <div class="news-footer">
+            <span class="news-date">20 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🛡️</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Как защититься от мошенников с домофоном?</h2>
+          <p class="news-desc">Никогда не называйте коды из СМС, push-уведомлений или писем. Работы с домофоном проводятся только через официальное решение ТСЖ, УК или Жилищника. Оплата за общедомовое оборудование не производится наличными на месте.</p>
+          <div class="news-footer">
+            <span class="news-date">19 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🪪</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Мошенничество с оформлением загранпаспорта</h2>
+          <p class="news-desc">Мошенники обещают оформить загранпаспорт за 1–2 дня без МФЦ, просят сканы документов и полную предоплату на карту физлица — после перевода исчезают. Подавать заявление можно только лично в МФЦ или через «Госуслуги».</p>
+          <div class="news-footer">
+            <span class="news-date">18 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">💞</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Финбез или природа? Однозначно оба</h2>
+          <p class="news-desc">Финансовая безопасность и забота о природе — не противоположности, а части одной осознанной жизни. Обсуждаем баланс между финансовой грамотностью и экологичным образом жизни.</p>
+          <div class="news-footer">
+            <span class="news-date">17 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🔥</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Статья 167 УК РФ: почему ваши сбережения могут просто сгореть</h2>
+          <p class="news-desc">Умышленное уничтожение чужого имущества — до 5 лет тюрьмы. Случайность не защита: выиграть суд не значит получить деньги, если у виновника нечего забирать. Храните часть сбережений не только дома — в банке или у родных.</p>
+          <div class="news-footer">
+            <span class="news-date">16 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">😬</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Ну просто жиза, да?</h2>
+          <p class="news-desc">Узнаёте себя в типичных финансовых ситуациях? Обсуждаем в канале то, с чем сталкивается каждый — и как не попасть в ловушки мошенников в повседневной жизни.</p>
+          <div class="news-footer">
+            <span class="news-date">14 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🏃</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">А вы занимаетесь спортом?</h2>
+          <p class="news-desc">Спорт, здоровье и финансовая безопасность — всё связано. Делитесь в комментариях, как вы следите за собой и своими финансами одновременно.</p>
+          <div class="news-footer">
+            <span class="news-date">13 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">💰</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">По новостям это прям 100% тру, согласны?</h2>
+          <p class="news-desc">Разбираем новости, которые звучат слишком правдоподобно — и учимся отличать реальные факты от манипуляций и финансовых разводов.</p>
+          <div class="news-footer">
+            <span class="news-date">12 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🎖️</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Поздравляем с Днём Победы!</h2>
+          <p class="news-desc">Один из самых важных дней в истории наших стран. Огромная благодарность всем, кто своим трудом, жертвой и храбростью добился победы.</p>
+          <div class="news-footer">
+            <span class="news-date">9 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🎬</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">«Поймай меня, если сможешь»: схемы поддельных чеков</h2>
+          <p class="news-desc">16-летний аферист печатал идеальные фальшивые чеки и использовал социальную инженерию. Как защититься: не отдавайте чеки посторонним, проверяйте сумму и реквизиты, используйте электронные чеки и не переходите по подозрительным ссылкам.</p>
+          <div class="news-footer">
+            <span class="news-date">8 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🔐</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Как вернуть доступ к аккаунту в мессенджере</h2>
+          <p class="news-desc">Потеря доступа к Telegram, VK или МАКС — неприятно, но почти всегда обратимо, если действовать быстро. Главное — не паниковать. Собрали подробные гайды по восстановлению аккаунтов.</p>
+          <div class="news-footer">
+            <span class="news-date">7 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">⚠️</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Схема «забери у Петра, отдай Ивану» живее всех живых</h2>
+          <p class="news-desc">Сегодня МММ не печатает бумажные билеты — она прячется под маской сомнительных крипто-проектов с доходностью 1000%, финансовых «игр» в Telegram-чатах и пузырей в NFT-стартапах.</p>
+          <div class="news-footer">
+            <span class="news-date">6 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🪤</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Схема Понци: высокая доходность, быстрые выплаты — и тишина</h2>
+          <p class="news-desc">«Финансовая пирамида» работает всегда: первым платят быстро, потом наступает тишина. Если обещают доход за месяц, который банки дают за год — вас не обогащают, а разводят.</p>
+          <div class="news-footer">
+            <span class="news-date">5 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">🏦</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Джозеф «Жёлтый парень» Уэйл: Bank of Fake</h2>
+          <p class="news-desc">Один из величайших мошенников XX века открыл бутафорский банк с актёрами вместо сотрудников и продал несуществующие земли с нефтью за 500 тысяч долларов. «Каждая моя жертва была жадной» — его кредо.</p>
+          <div class="news-footer">
+            <span class="news-date">4 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">📉</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Взлёт и падение «Связного»: кейс Максима Ноготкова</h2>
+          <p class="news-desc">Как избыточные амбиции и долговая нагрузка разрушили бизнес-империю. «Эффект домино»: убыточные проекты тянут прибыльные, а кредиты становятся удавкой.</p>
+          <div class="news-footer">
+            <span class="news-date">3 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">📈</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">Схемы мошенничества на Уолл-стрит и в Tinder</h2>
+          <p class="news-desc">Pump and dump от «Волка с Уолл-стрит» и аферист из Tinder Саймон Леваев, выдававший себя за сына миллиардера. Как не попасться: не верьте идеальному образу, проверяйте информацию, избегайте финансовых обязательств с незнакомцами.</p>
+          <div class="news-footer">
+            <span class="news-date">2 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-img-placeholder">📆</div>
+        <div class="news-body">
+          <span class="news-tag">ФИНфорс</span>
+          <h2 class="news-title">ФИНфорс поздравляет с днём труда!</h2>
+          <p class="news-desc">Пусть Праздник Весны и Труда принесёт радость, тепло и вдохновение. Желаем накопления на все цели, больших доходов и никогда не попадать в руки мошенников.</p>
+          <div class="news-footer">
+            <span class="news-date">1 мая 2026</span>
+            <a href="https://t.me/a_fins" target="_blank" rel="noopener noreferrer" class="news-link">ФИНфорс →</a>
+          </div>
+        </div>
+      </article>
+
       <article class="news-card">
         <div class="news-img-placeholder">📲</div>
         <div class="news-body">
@@ -742,11 +942,48 @@
   </div>
 </div>
 
+<!-- MODALS -->
+<div class="modal-overlay" id="search-modal" onclick="if(event.target===this)closeSearch()">
+  <div class="modal-panel search-modal-panel">
+    <div class="modal-head">
+      <h2 data-i18n="modal.search.title">Поиск по сайту</h2>
+      <button type="button" class="modal-close" onclick="closeSearch()" aria-label="Закрыть" data-i18n-aria="modal.close">✕</button>
+    </div>
+    <input type="search" class="search-input" id="global-search-input" data-i18n-placeholder="modal.search.placeholder" placeholder="FAQ, новости, кодекс…" autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="emergency-modal" onclick="if(event.target===this)closeEmergency()">
+  <div class="modal-panel emergency-modal-panel">
+    <div class="modal-head">
+      <h2 id="emergency-modal-title" data-i18n="modal.emergency.title">Экстренная помощь</h2>
+      <button type="button" class="modal-close" onclick="closeEmergency()" aria-label="Закрыть" data-i18n-aria="modal.close">✕</button>
+    </div>
+    <p class="modal-intro" id="emergency-modal-intro" data-i18n="modal.emergency.intro">Выберите ситуацию — покажем пошаговый план на первые 10 минут.</p>
+    <ul class="emergency-steps" id="emergency-steps"></ul>
+    <div class="modal-actions" id="emergency-actions"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="risk-modal" onclick="if(event.target===this)closeRiskCheck()">
+  <div class="modal-panel risk-modal-panel">
+    <div class="modal-head">
+      <h2 data-i18n="modal.risk.title">Чек риска</h2>
+      <button type="button" class="modal-close" onclick="closeRiskCheck()" aria-label="Закрыть">✕</button>
+    </div>
+    <div id="risk-check-body"></div>
+  </div>
+</div>
+
 <footer>
-  <div class="footer-left">© 2026 Сипари Молй — Финансовая безопасность. Все права защищены.</div>
+  <div class="footer-left" data-i18n="footer.left">© 2026 Сипари Молй — Финансовая безопасность. Все права защищены.</div>
   <div class="footer-right">Мухамадиева Латифа · Асадуллозода Зулайхо · Фозилов Мухаммад · Шарифзода Мусаввир</div>
 </footer>
 
+<script src="i18n.js"></script>
+<script src="content-i18n.js"></script>
+<script src="i18n-render.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
